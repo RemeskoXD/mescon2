@@ -22,28 +22,28 @@ const experts = [
     tags: ["Viral Content", "Personal Brand", "Instagram"]
   },
   {
-    name: "Vašek Rajchart",
+    name: "Jan Richtr",
     role: "Mindset & Performance Coach",
     description: "Expert na psychologii výkonu a odstraňování mentálních bloků, které brání v podnikání.",
     image: "https://web2.itnahodinu.cz/image/9.webp",
     tags: ["Mindset", "Produktivita", "Leadership"]
   },
   {
-    name: "David Černý",
+    name: "Jakub Varga",
     role: "E-commerce Specialist",
     description: "Expert na budování ziskových e-shopů a dropshipping strategií s obratem přes 10M+ ročně.",
     image: "https://web2.itnahodinu.cz/image/8.webp",
     tags: ["E-commerce", "Dropshipping", "Shopify"]
   },
   {
-    name: "Tomáš Veselý",
+    name: "Štěpán Lažek",
     role: "Automation Architect",
     description: "Specialista na AI automatizaci a systémové procesy, které šetří stovky hodin práce měsíčně.",
     image: "https://web2.itnahodinu.cz/image/6.webp",
     tags: ["AI", "Automation", "Systems"]
   },
   {
-    name: "Jakub Král",
+    name: "Tomáš Bačina",
     role: "Investment Lead",
     description: "Portfolio manažer se zaměřením na kryptoměny a diverzifikaci aktiv pro dlouhodobý růst.",
     image: "https://web2.itnahodinu.cz/image/4.webp",
