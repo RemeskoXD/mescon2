@@ -248,7 +248,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
                 {hasAccess && (
                     <>
                         {activeTab === 'notifications' && <DashboardNotifications notifications={user.notifications || []} onMarkAsRead={handleMarkAsRead} onDelete={handleDeleteNotification} onClearAll={handleClearAllNotifications} />}
-                        {activeTab === 'ai' && <DashboardAI user={user} />}
+                        {activeTab === 'ai' && <DashboardAI user={user} settings={props.settings} />}
                         {activeTab === 'notes' && <DashboardNotes user={user} courses={props.courses} onUpdateProfile={onUpdateProfile} notify={notify} />}
                         {activeTab === 'tools' && <DashboardTools user={user} onUpdate={onUpdateProfile} notify={notify} />}
                         {activeTab === 'community' && <DashboardCommunity user={user} messages={props.communityMessages || []} onSend={props.onSendCommunityMessage} onEdit={props.onEditCommunityMessage} onViewUser={setViewingUserId} allUsers={props.allUsers} initialChatUserId={chatTargetUserId} channels={props.channels} notify={notify} />}

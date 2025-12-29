@@ -16,10 +16,31 @@ const experts = [
   },
   {
     name: "Ludvík Remešek",
-    role: "Social Media & Brand Expert",
-    description: "Guru sociálních sítí a tvorby virálního obsahu. Pomohl klientům získat miliony zhlédnutí organicky.",
-    image: "https://web2.itnahodinu.cz/image/IMG-20250920-WA0041.jpg",
-    tags: ["Viral Content", "Personal Brand", "Instagram"]
+    role: "Marketing & IT Expert",
+    description: "Expert na technologické systémy a komplexní marketingové strategie. Propojuje svět kódu s psychologií prodeje.",
+    image: "https://web2.itnahodinu.cz/image/remesek.jpeg",
+    tags: ["Marketing Tech", "IT Strategy", "Growth"]
+  },
+  {
+    name: "Petr Vackář",
+    role: "Framer Vývoj webu",
+    description: "Mistr no-code vývoje v nástroji Framer. Tvoří weby, které nejen skvěle vypadají, ale hlavně doručují výsledky.",
+    image: "https://web2.itnahodinu.cz/image/Vackar.jpeg",
+    tags: ["Framer", "Web Design", "No-code"]
+  },
+  {
+    name: "Mates Matějka",
+    role: "Prodej Expert",
+    description: "Dravec v oblasti high-ticket sales. Naučí vás, jak ovládnout psychologii prodeje a uzavírat ty největší dealy.",
+    image: "https://web2.itnahodinu.cz/image/Matejka.jpeg",
+    tags: ["Sales", "Negotiation", "Closer"]
+  },
+  {
+    name: "Tomáš Crkal",
+    role: "Grafický Designer webu",
+    description: "Specialista na vizuální identitu a UI/UX design. Přetváří vize v moderní digitální zážitky.",
+    image: "https://web2.itnahodinu.cz/image/Crkal.jpeg",
+    tags: ["UI/UX", "Branding", "Graphics"]
   },
   {
     name: "Jan Richtr",

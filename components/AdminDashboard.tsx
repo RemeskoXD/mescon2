@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { 
   LayoutDashboard, Users, BookOpen, Brain, Calendar, MessageSquare, 
   Settings, LogOut, Shield, Gift, FileText, Video, Award, 
-  ShoppingBag, CheckSquare, Zap, Megaphone, Menu, X, BarChart3
+  ShoppingBag, CheckSquare, Zap, Megaphone, Menu, X, BarChart3, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { 
   User, SystemSettings, Challenge, Artifact, CalendarEvent, BonusTask, 
@@ -93,6 +93,7 @@ interface AdminDashboardProps {
 const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false); // Stav pro sbalení menu
 
   const menuItems = [
       { id: 'overview', label: 'Přehled', icon: <LayoutDashboard size={20}/> },
@@ -135,22 +136,59 @@ const AdminDashboard: React.FC<AdminDashboardProps> = (props) => {
         )}
 
         {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 w-72 bg-[#05080f] border-r border-gray-800 flex flex-col flex-shrink-0 z-[110] transition-transform duration-300 transform lg:relative lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="p-6 hidden lg:block">
-                <div className="font-black text-2xl tracking-tighter text-white">MESCON<span className="text-red-600">ADMIN</span></div>
+        <div className={`
+            fixed inset-y-0 left-0 bg-[#05080f] border-r border-gray-800 flex flex-col flex-shrink-0 z-[110] transition-all duration-300 transform lg:relative lg:translate-x-0
+            ${isMobileMenuOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'}
+            ${isCollapsed ? 'lg:w-20' : 'lg:w-72'}
+        `}>
+            {/* Logo and Collapse Toggle */}
+            <div className="p-6 flex items-center justify-between">
+                <div className={`font-black text-2xl tracking-tighter text-white transition-opacity duration-300 ${isCollapsed ? 'lg:opacity-0 lg:w-0 overflow-hidden' : 'opacity-100'}`}>
+                    MESCON<span className="text-red-600">ADMIN</span>
+                </div>
+                {/* Fallback small logo for collapsed state */}
+                {isCollapsed && <div className="absolute left-1/2 -translate-x-1/2 font-black text-2xl text-red-600 hidden lg:block">M</div>}
+                
+                <button 
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="hidden lg:flex p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors ml-auto"
+                    title={isCollapsed ? "Rozbalit menu" : "Sbalit menu"}
+                >
+                    {isCollapsed ? <ChevronRight size={20}/> : <ChevronLeft size={20}/>}
+                </button>
             </div>
             
             <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1 custom-scrollbar mt-16 lg:mt-0">
                 {menuItems.map(item => (
-                    <button key={item.id} onClick={() => handleTabChange(item.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition ${activeTab === item.id ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-gray-800'}`}>
-                        {item.icon} {item.label}
+                    <button 
+                        key={item.id} 
+                        onClick={() => handleTabChange(item.id)} 
+                        className={`
+                            w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all
+                            ${activeTab === item.id ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                            ${isCollapsed ? 'lg:px-0 lg:justify-center' : 'px-4'}
+                        `}
+                        title={isCollapsed ? item.label : ""}
+                    >
+                        <span className="flex-shrink-0">{item.icon}</span>
+                        <span className={`whitespace-nowrap transition-opacity duration-300 ${isCollapsed ? 'lg:hidden' : 'opacity-100'}`}>
+                            {item.label}
+                        </span>
                     </button>
                 ))}
             </div>
 
             <div className="p-4 border-t border-gray-800">
-                <button onClick={props.onLogout} className="w-full py-2.5 border border-gray-700 rounded-lg text-xs font-bold text-gray-400 hover:text-white hover:bg-gray-800 transition flex items-center justify-center gap-2">
-                    <LogOut size={14}/> Odhlásit se
+                <button 
+                    onClick={props.onLogout} 
+                    className={`
+                        w-full py-2.5 border border-gray-700 rounded-lg text-xs font-bold text-gray-400 hover:text-white hover:bg-gray-800 transition flex items-center gap-2
+                        ${isCollapsed ? 'lg:justify-center lg:border-none' : 'justify-center'}
+                    `}
+                    title={isCollapsed ? "Odhlásit se" : ""}
+                >
+                    <LogOut size={14}/> 
+                    <span className={isCollapsed ? 'lg:hidden' : ''}>Odhlásit se</span>
                 </button>
             </div>
         </div>

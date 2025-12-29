@@ -24,6 +24,9 @@ export interface SystemSettings {
       text: string;
       timer: string; // e.g. "2d 14h"
   };
+  // NEW: AI Mentor Settings
+  aiEnabled?: boolean;
+  aiSystemInstruction?: string;
 }
 
 export interface Notification {
@@ -366,6 +369,7 @@ export interface User {
   isPublicProfile: boolean; // Leaderboard visibility
   skills?: string[]; // New: User skills (e.g. Sales, Marketing)
   interests?: string[]; // New: What user is looking for (e.g. Co-founder)
+  notifiedExpiring?: boolean; // Flag to track if we already warned user
 
   // Finance & Tools
   financialRecords: Transaction[];

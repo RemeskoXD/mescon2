@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Award, Edit, Save, X, Printer, ShieldCheck } from 'lucide-react';
 import { User, Certificate } from '../../types';
@@ -14,7 +15,6 @@ interface AdminCertificatesProps {
 const AdminCertificates: React.FC<AdminCertificatesProps> = ({ allUsers, onUpdateCertificate, notify }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [editingCert, setEditingCert] = useState<{ cert: Certificate, userId: string, newName: string } | null>(null);
-    const [previewCert, setPreviewCert] = useState<Certificate | null>(null);
 
     const allCertificates = allUsers.flatMap(user => 
         (user.certificates || []).map(cert => ({ ...cert, userId: user.id, userEmail: user.email }))
@@ -51,42 +51,56 @@ const AdminCertificates: React.FC<AdminCertificatesProps> = ({ allUsers, onUpdat
             <html>
                 <head>
                     <title>Certifikát - ${cert.courseName}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Pinyon+Script&display=swap" rel="stylesheet">
                     <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Pinyon+Script&display=swap');
-                        body { margin: 0; padding: 0; background: #fdfdfd; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Montserrat', sans-serif; -webkit-print-color-adjust: exact; }
-                        .cert-page { width: 297mm; height: 210mm; background: white; padding: 20mm; box-sizing: border-box; position: relative; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); }
-                        .outer-border { position: absolute; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; border: 2px solid #1e3a8a; }
-                        .inner-border { position: absolute; top: 8mm; left: 8mm; right: 8mm; bottom: 8mm; border: 1px solid #d4af37; }
-                        .guilloche { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.05; background-image: url('https://www.transparenttextures.com/patterns/diagmonds-light.png'); pointer-events: none; }
-                        .content { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid #d4af37; margin: 10mm; padding: 20mm; }
-                        .header-badge { width: 100px; height: 100px; margin-bottom: 10mm; }
-                        h1 { font-family: 'Cinzel', serif; font-size: 52pt; color: #1e3a8a; margin: 0; letter-spacing: 10pt; text-transform: uppercase; }
-                        .sub-header { font-size: 14pt; color: #d4af37; letter-spacing: 5pt; text-transform: uppercase; margin-bottom: 15mm; font-weight: 700; }
-                        .student-name { font-family: 'Pinyon Script', cursive; font-size: 68pt; color: #111; margin: 10mm 0; border-bottom: 1px solid #eee; padding-bottom: 5mm; min-width: 60%; }
-                        .course-name { font-family: 'Cinzel', serif; font-weight: 700; color: #1e40af; font-size: 24pt; display: block; margin-top: 5mm; }
-                        .footer { margin-top: auto; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; }
-                        .signature-img { font-family: 'Pinyon Script', cursive; font-size: 32pt; color: #1e3a8a; margin-bottom: -5mm; }
-                        .sign-line { border-top: 1px solid #333; padding-top: 2mm; font-size: 10pt; text-transform: uppercase; font-weight: 700; color: #666; }
-                        .qr-box img { width: 80px; height: 80px; }
-                        @media print { @page { size: landscape; margin: 0; } body { background: none; } }
+                        @page { size: landscape; margin: 0; }
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        body { 
+                            margin: 0; padding: 0; background: white; 
+                            display: flex; justify-content: center; align-items: center; 
+                            min-height: 100vh; font-family: 'Montserrat', sans-serif;
+                        }
+                        .cert-container {
+                            width: 297mm; height: 210mm; padding: 15mm;
+                            box-sizing: border-box; position: relative; overflow: hidden;
+                            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+                        }
+                        .border-outer { position: absolute; inset: 10mm; border: 4px double #1e3a8a; z-index: 1; }
+                        .border-inner { position: absolute; inset: 13mm; border: 1px solid #d4af37; z-index: 2; }
+                        .main-content {
+                            position: relative; z-index: 10; height: 100%;
+                            display: flex; flex-direction: column; align-items: center;
+                            justify-content: center; text-align: center; padding: 20mm;
+                        }
+                        h1 { font-family: 'Cinzel', serif; font-size: 58pt; color: #1e3a8a; margin: 0; letter-spacing: 12pt; text-transform: uppercase; }
+                        .student-name { font-family: 'Pinyon Script', cursive; font-size: 68pt; color: #111; margin: 5mm 0; border-bottom: 1px solid rgba(212, 175, 55, 0.3); min-width: 70%; }
+                        .course-title { font-family: 'Cinzel', serif; font-weight: 700; color: #1e3a8a; font-size: 24pt; display: block; margin-top: 5mm; }
+                        .footer-section { margin-top: auto; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; }
+                        .sig-block { text-align: center; width: 240px; }
+                        .sig-name { font-family: 'Pinyon Script', cursive; font-size: 32pt; color: #1e3a8a; }
+                        .sig-line { border-top: 1.5px solid #333; padding-top: 2mm; font-size: 10pt; text-transform: uppercase; font-weight: 700; color: #666; }
+                        .qr-box img { width: 85px; height: 85px; background: white; }
                     </style>
                 </head>
                 <body>
-                    <div class="cert-page">
-                        <div class="outer-border"></div><div class="inner-border"></div><div class="guilloche"></div>
-                        <div class="content">
-                            <div class="header-badge"><svg viewBox="0 0 100 100" fill="none"><path d="M50 5L15 20V45C15 66.6 29.9 86.4 50 95C70.1 86.4 85 66.6 85 45V20L50 5Z" fill="#1e3a8a"/><path d="M40 65L25 50L30 45L40 55L70 25L75 30L40 65Z" fill="#d4af37"/></svg></div>
-                            <h1>Certifikát</h1><div class="sub-header">Úspěšného Absolvování</div>
-                            <div style="font-size: 16pt; color: #444;">Tímto čestně prohlašujeme, že student</div>
+                    <div class="cert-container">
+                        <div class="border-outer"></div><div class="border-inner"></div>
+                        <div class="main-content">
+                            <h1>Certifikát</h1>
+                            <div style="font-size: 16pt; color: #d4af37; letter-spacing: 5pt; text-transform: uppercase; margin-top: 5mm;">Úspěšného Absolvování</div>
+                            <div style="font-size: 14pt; color: #555; margin-top: 10mm;">Tímto potvrzujeme, že student</div>
                             <div class="student-name">${cert.studentName}</div>
-                            <div style="font-size: 18pt; color: #444;">řádně splnil požadavky certifikačního programu<br/><span class="course-name">${cert.courseName}</span></div>
-                            <div class="footer">
+                            <div style="font-size: 16pt; color: #444; margin-top: 10mm;">úspěšně dokončil program<br/><span class="course-title">${cert.courseName}</span></div>
+                            <div class="footer-section">
                                 <div class="qr-box"><img src="${qrUrl}" /><div style="font-size: 7pt; margin-top: 2mm; color: #999;">ID: ${cert.code}</div></div>
-                                <div style="text-align: center; width: 250px;"><div class="signature-img">Vašek Gabriel</div><div class="sign-line">Zakladatel Mescon Academy</div></div>
+                                <div class="sig-block"><div class="sig-name">Vašek Gabriel</div><div class="sig-line">Zakladatel Mescon Academy</div></div>
                             </div>
                         </div>
                     </div>
-                    <script>window.onload = () => { setTimeout(() => { window.print(); window.close(); }, 500); }</script>
+                    <script>window.onload = () => { setTimeout(() => { window.print(); window.close(); }, 1000); }</script>
                 </body>
             </html>
         `);

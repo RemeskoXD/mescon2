@@ -67,7 +67,8 @@ const AdminUsers: React.FC<AdminUsersProps> = ({ allUsers, courses, onUpdateUser
           planExpires: editForm.planExpires ? new Date(editForm.planExpires).toISOString() : undefined,
           dashboardMessage: safeDashboardMessage,
           skills: skills,
-          interests: interests
+          interests: interests,
+          notifiedExpiring: false // Reset warning when admin updates plan
       };
       if (!editForm.planExpires) delete updatedUser.planExpires;
       onUpdateUser(updatedUser);
@@ -203,9 +204,12 @@ const AdminUsers: React.FC<AdminUsersProps> = ({ allUsers, courses, onUpdateUser
                                     </td>
                                     <td className="p-5">
                                         {user.planExpires ? (
-                                            <span className={isExpired ? 'text-red-500 font-bold' : 'text-white'}>
-                                                {new Date(user.planExpires).toLocaleDateString()}
-                                            </span>
+                                            <div className="flex flex-col">
+                                                <span className={`font-mono ${isExpired ? 'text-red-500 font-bold' : 'text-white'}`}>
+                                                    {new Date(user.planExpires).toLocaleDateString()}
+                                                </span>
+                                                {isExpired && <span className="text-[10px] text-red-600 uppercase font-black">Prošlé předplatné</span>}
+                                            </div>
                                         ) : (
                                             <span className="text-gray-500 italic">Lifetime</span>
                                         )}

@@ -68,7 +68,7 @@ const INITIAL_SETTINGS: SystemSettings = {
     maintenanceMode: false, 
     allowRegistrations: true, 
     globalBanner: '', 
-    version: '2.3.8 PRO-BETA',
+    version: '2.4.0 PRO-GOLD',
     leaderboardBanner: {
         active: true,
         title: 'Týdenní Odměna',
@@ -172,6 +172,36 @@ const App1: React.FC = () => {
             const unsubscribeUser = onSnapshot(userDocRef, async (docSnap) => {
                 if (docSnap.exists()) {
                     const userData = docSnap.data() as User;
+                    
+                    // --- AUTOMATIC SUBSCRIPTION CHECK ---
+                    const now = new Date();
+                    if (userData.planExpires && userData.role !== 'admin' && userData.role !== 'nope') {
+                        const expireDate = new Date(userData.planExpires);
+                        
+                        // 1. HARD EXPIRATION
+                        if (expireDate < now) {
+                            await updateDoc(userDocRef, { 
+                                role: 'nope', 
+                                notifiedExpiring: false,
+                                notifications: arrayUnion(createSystemNotification('Předplatné vypršelo', 'Vaše členství bylo ukončeno. Pro další přístup si prosím obnovte plán.', 'error'))
+                            });
+                            notify('error', 'Expirace', 'Vaše předplatné vypršelo.');
+                            return;
+                        }
+
+                        // 2. WARNING BEFORE EXPIRATION (7 Days)
+                        const diffTime = expireDate.getTime() - now.getTime();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays > 0 && diffDays <= 7 && !userData.notifiedExpiring) {
+                            await updateDoc(userDocRef, { 
+                                notifiedExpiring: true,
+                                notifications: arrayUnion(createSystemNotification('Předplatné brzy končí', `Vaše členství vyprší za ${diffDays} dní (${expireDate.toLocaleDateString()}). Nezapomeňte si ho prodloužit.`, 'warning'))
+                            });
+                            notify('warning', 'Předplatné končí', `Zbývá vám posledních ${diffDays} dní.`);
+                        }
+                    }
+
                     if (levelRequirements.length > 0) {
                         const { newLevel } = calculateXPAndLevel(userData, 0);
                         if (newLevel !== userData.level) {

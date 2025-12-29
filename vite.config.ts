@@ -6,7 +6,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
   // Načte proměnné prostředí z .env souborů. 
   // Třetí parametr '' zajistí načtení všech proměnných, nejen těch s prefixem VITE_
-  const env = loadEnv(mode, process.cwd(), '');
+  // Fix: Cast process to any to avoid TypeScript error where cwd() might not be defined on the process type in this environment
+  const env = loadEnv(mode, (process as any).cwd(), '');
   
   return {
     plugins: [react()],
@@ -37,7 +38,7 @@ export default defineConfig(({ mode }) => {
     // Google GenAI SDK vyžaduje process.env.API_KEY.
     // Tato sekce ho bezpečně nahradí při sestavování aplikace.
     define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || process.env.API_KEY || ""),
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || (process as any).env.API_KEY || ""),
       'process.env': env
     },
   };

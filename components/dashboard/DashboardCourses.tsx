@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Lock, Clock, Gem, ArrowRight, PlayCircle, FileText, CheckCircle, Brain, RefreshCw, Save, StickyNote, Menu, X, ChevronRight, Paperclip, Download, ExternalLink, ClipboardList, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -124,7 +125,6 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
     const submitAssignment = (lessonId: string) => {
         if (!assignmentText.trim()) return notify('error', 'Chyba', 'Vyplňte odpověď.');
         // In a real app, save to DB. Here we simulate success and mark lesson complete.
-        // We could also use onUpdateProfile to save assignment submission if added to user type.
         onStart(selectedCourse!.id, lessonId);
         notify('success', 'Odesláno', 'Úkol byl úspěšně odevzdán.');
     };
@@ -196,14 +196,16 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
                 </>
             )}
 
-            {/* PLAYER VIEW */}
+            {/* PLAYER VIEW - HIGH Z-INDEX TO OVERLAY DASHBOARD BANNERS/MENU */}
             <AnimatePresence>
                 {selectedCourse && (
-                    <MotionDiv initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0}} className="fixed inset-0 z-50 bg-[#020617] flex flex-col">
-                        {/* Header */}
-                        <div className="h-16 border-b border-gray-800 flex items-center justify-between px-6 bg-[#0B0F19] relative z-20">
+                    <MotionDiv initial={{opacity:0, scale: 0.98}} animate={{opacity:1, scale: 1}} exit={{opacity:0}} className="fixed inset-0 z-[9999] bg-[#020617] flex flex-col overflow-hidden">
+                        {/* Header - Fixed to Player, independent of dashboard */}
+                        <div className="h-16 border-b border-gray-800 flex items-center justify-between px-6 bg-[#0B0F19] relative shrink-0">
                             <div className="flex items-center gap-4">
-                                <button onClick={() => setSelectedCourse(null)} className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition"><ArrowRight className="rotate-180"/></button>
+                                <button onClick={() => setSelectedCourse(null)} className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition" title="Zavřít kurz">
+                                    <X size={20}/>
+                                </button>
                                 <div>
                                     <h3 className="font-bold text-white text-sm md:text-base hidden md:block">{selectedCourse.title}</h3>
                                     <h3 className="font-bold text-white text-sm md:hidden truncate max-w-[150px]">{selectedCourse.title}</h3>
@@ -214,7 +216,7 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="hidden md:block text-right">
-                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Progress</p>
+                                    <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Postup Kurzem</p>
                                     <p className="text-sm font-bold text-white">
                                         {(getProgress(selectedCourse.id)?.completedLessonIds || []).length} / {selectedCourse.modules.reduce((acc,m)=>acc+m.lessons.length,0)}
                                     </p>
@@ -230,11 +232,15 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
                         </div>
 
                         <div className="flex-1 flex overflow-hidden relative">
-                            {/* Sidebar Modules (Desktop: always visible, Mobile: conditional) */}
+                            {/* Sidebar Modules (Desktop: always visible, Mobile: slide-in) */}
                             <div className={`
-                                fixed inset-y-0 right-0 w-80 bg-[#0B0F19] border-l border-gray-800 z-30 transform transition-transform duration-300 md:relative md:inset-auto md:w-80 md:border-l-0 md:border-r md:transform-none md:flex flex-col flex-shrink-0
-                                ${isMobileMenuOpen ? 'translate-x-0 pt-16' : 'translate-x-full md:translate-x-0'}
+                                fixed inset-y-0 right-0 w-80 bg-[#0B0F19] border-l border-gray-800 z-[10000] transform transition-transform duration-300 md:relative md:inset-auto md:w-80 md:border-l md:border-gray-800 md:transform-none md:flex flex-col flex-shrink-0
+                                ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
                             `}>
+                                <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-800">
+                                    <span className="font-bold">Seznam lekcí</span>
+                                    <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-400"><X size={20}/></button>
+                                </div>
                                 <div className="h-full overflow-y-auto custom-scrollbar flex flex-col">
                                     {selectedCourse.modules.map((mod, i) => (
                                         <div key={mod.id} className="border-b border-gray-800/50">
@@ -266,18 +272,18 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
 
                             {/* Mobile Sidebar Overlay */}
                             {isMobileMenuOpen && (
-                                <div className="fixed inset-0 bg-black/50 z-20 md:hidden" onClick={() => setIsMobileMenuOpen(false)}></div>
+                                <div className="fixed inset-0 bg-black/50 z-[9999] md:hidden" onClick={() => setIsMobileMenuOpen(false)}></div>
                             )}
 
-                            {/* Main Content */}
-                            <div className="flex-1 bg-black flex flex-col overflow-y-auto custom-scrollbar w-full">
+                            {/* Main Content Area */}
+                            <div className="flex-1 bg-black flex flex-col overflow-y-auto custom-scrollbar relative">
                                 {currentLessonId ? (() => {
                                     const lesson = selectedCourse.modules.find(m => m.id === currentModuleId)?.lessons.find(l => l.id === currentLessonId);
                                     if (!lesson) return null;
                                     const isCompleted = (getProgress(selectedCourse.id)?.completedLessonIds || []).includes(lesson.id);
 
                                     return (
-                                        <div className="max-w-4xl mx-auto w-full p-4 md:p-12 space-y-6 md:space-y-8 pb-20">
+                                        <div className="max-w-4xl mx-auto w-full p-4 md:p-12 space-y-6 md:space-y-8 pb-32">
                                             
                                             {/* Video Player */}
                                             {lesson.type === 'video' && (
@@ -454,34 +460,23 @@ const DashboardCourses: React.FC<DashboardCoursesProps> = ({ courses, user, onSt
                                                 </div>
                                             )}
 
-                                            {/* Action Button */}
-                                            {activeTab === 'content' && (
-                                                <div className="flex justify-end pt-8 border-t border-gray-800">
-                                                    {/* Assignment/Quiz completion handled by their specific buttons above */}
-                                                    {lesson.type !== 'quiz' && lesson.type !== 'assignment' && (
-                                                        <button 
-                                                            onClick={() => {
-                                                                onStart(selectedCourse.id, lesson.id);
-                                                            }}
-                                                            className={`px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 transition ${isCompleted ? 'bg-green-600 hover:bg-green-500' : 'bg-blue-600 hover:bg-blue-500'}`}
-                                                        >
-                                                            {isCompleted ? 'Dokončeno' : 'Dokončit Lekci'}
-                                                            <CheckCircle size={18}/>
-                                                        </button>
-                                                    )}
-                                                    
-                                                    {/* State Display for interactive types */}
-                                                    {(lesson.type === 'quiz' || lesson.type === 'assignment') && isCompleted && (
-                                                        <button disabled className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold flex items-center gap-2 cursor-default">
-                                                            Splněno <CheckCircle size={18}/>
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            )}
+                                            {/* Action Buttons */}
+                                            <div className="pt-12 border-t border-gray-800 flex justify-between items-center">
+                                                <p className="text-xs text-gray-500 font-medium">Lekce {(getProgress(selectedCourse.id)?.completedLessonIds || []).length} / {selectedCourse.modules.reduce((acc,m)=>acc+m.lessons.length,0)}</p>
+                                                {lesson.type !== 'quiz' && lesson.type !== 'assignment' && (
+                                                    <button 
+                                                        onClick={() => onStart(selectedCourse.id, lesson.id)}
+                                                        className={`px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 transition ${isCompleted ? 'bg-green-600 hover:bg-green-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+                                                    >
+                                                        {isCompleted ? 'Lekce dokončena' : 'Označit jako dokončené'}
+                                                        <CheckCircle size={18}/>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     );
                                 })() : (
-                                    <div className="flex-1 flex items-center justify-center text-gray-500">Vyberte lekci.</div>
+                                    <div className="flex-1 flex items-center justify-center text-gray-500">Vyberte lekci z postranního panelu.</div>
                                 )}
                             </div>
                         </div>

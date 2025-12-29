@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Award, Download, ShieldCheck, Printer, CheckCircle2, Star } from 'lucide-react';
 import { Certificate, User } from '../../types';
@@ -22,195 +23,204 @@ const DashboardCertificates: React.FC<DashboardCertificatesProps> = ({ certifica
             <html>
                 <head>
                     <title>Certifikát - ${cert.courseName}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Pinyon+Script&display=swap" rel="stylesheet">
                     <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Pinyon+Script&display=swap');
-                        
+                        @page { 
+                            size: landscape; 
+                            margin: 0; 
+                        }
+                        * {
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
                         body { 
                             margin: 0; 
                             padding: 0; 
-                            background: #fdfdfd; 
+                            background: white; 
                             display: flex; 
                             justify-content: center; 
                             align-items: center; 
                             min-height: 100vh; 
-                            font-family: 'Montserrat', sans-serif; 
-                            -webkit-print-color-adjust: exact; 
+                            font-family: 'Montserrat', sans-serif;
                         }
                         
-                        .cert-page {
+                        .cert-container {
                             width: 297mm;
                             height: 210mm;
-                            background: white;
-                            padding: 20mm;
+                            padding: 15mm;
                             box-sizing: border-box;
                             position: relative;
-                            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+                            overflow: hidden;
+                            background-color: #fff;
                             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
                         }
 
-                        /* Luxury Borders */
-                        .outer-border {
+                        .border-outer {
                             position: absolute;
-                            top: 5mm; left: 5mm; right: 5mm; bottom: 5mm;
-                            border: 2px solid #1e3a8a;
+                            inset: 10mm;
+                            border: 4px double #1e3a8a;
+                            z-index: 1;
                         }
-                        
-                        .inner-border {
+
+                        .border-inner {
                             position: absolute;
-                            top: 8mm; left: 8mm; right: 8mm; bottom: 8mm;
+                            inset: 13mm;
                             border: 1px solid #d4af37;
+                            z-index: 2;
                         }
 
-                        .guilloche {
-                            position: absolute;
-                            top: 0; left: 0; width: 100%; height: 100%;
-                            opacity: 0.05;
-                            background-image: url('https://www.transparenttextures.com/patterns/diagmonds-light.png');
-                            pointer-events: none;
-                        }
-
-                        .content {
+                        .main-content {
                             position: relative;
                             z-index: 10;
                             height: 100%;
                             display: flex;
                             flex-direction: column;
                             align-items: center;
+                            justify-content: center;
                             text-align: center;
-                            border: 1px solid #d4af37;
-                            margin: 10mm;
                             padding: 20mm;
                         }
 
-                        .header-badge {
-                            width: 100px;
-                            height: 100px;
-                            margin-bottom: 10mm;
+                        .logo-badge {
+                            width: 90px;
+                            height: 90px;
+                            margin-bottom: 8mm;
                         }
 
                         h1 {
                             font-family: 'Cinzel', serif;
-                            font-size: 52pt;
+                            font-size: 58pt;
                             color: #1e3a8a;
                             margin: 0;
-                            letter-spacing: 10pt;
+                            letter-spacing: 12pt;
                             text-transform: uppercase;
+                            line-height: 1;
                         }
 
-                        .sub-header {
-                            font-size: 14pt;
+                        .cert-type {
+                            font-size: 16pt;
                             color: #d4af37;
                             letter-spacing: 5pt;
                             text-transform: uppercase;
-                            margin-bottom: 15mm;
+                            margin: 4mm 0 12mm 0;
                             font-weight: 700;
                         }
 
-                        .text-main {
-                            font-size: 16pt;
-                            color: #444;
-                            margin-bottom: 5mm;
+                        .intro-text {
+                            font-size: 14pt;
+                            color: #555;
+                            margin-bottom: 4mm;
                         }
 
                         .student-name {
                             font-family: 'Pinyon Script', cursive;
                             font-size: 68pt;
                             color: #111;
-                            margin: 10mm 0;
-                            border-bottom: 1px solid #eee;
-                            padding-bottom: 5mm;
-                            min-width: 60%;
+                            margin: 2mm 0;
+                            padding-bottom: 2mm;
+                            min-width: 80%;
+                            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
                         }
 
-                        .course-info {
-                            font-size: 18pt;
+                        .course-description {
+                            font-size: 16pt;
                             color: #444;
-                            max-width: 80%;
-                            line-height: 1.5;
+                            max-width: 85%;
+                            line-height: 1.6;
+                            margin-top: 8mm;
                         }
 
-                        .course-name {
+                        .course-title {
                             font-family: 'Cinzel', serif;
                             font-weight: 700;
                             color: #1e3a8a;
                             font-size: 24pt;
                             display: block;
-                            margin-top: 5mm;
+                            margin-top: 2mm;
                         }
 
-                        .footer {
+                        .footer-section {
                             margin-top: auto;
                             width: 100%;
                             display: flex;
                             justify-content: space-between;
                             align-items: flex-end;
+                            padding-top: 10mm;
                         }
 
-                        .signature-block {
+                        .sig-block {
                             text-align: center;
-                            width: 250px;
+                            width: 240px;
                         }
 
-                        .signature-img {
+                        .sig-name {
                             font-family: 'Pinyon Script', cursive;
                             font-size: 32pt;
                             color: #1e3a8a;
-                            margin-bottom: -5mm;
+                            margin-bottom: -4mm;
                         }
 
-                        .sign-line {
-                            border-top: 1px solid #333;
+                        .sig-line {
+                            border-top: 1.5px solid #333;
                             padding-top: 2mm;
                             font-size: 10pt;
                             text-transform: uppercase;
                             font-weight: 700;
                             color: #666;
+                            letter-spacing: 1pt;
                         }
 
-                        .seal-container {
-                            position: absolute;
-                            bottom: 40mm;
-                            right: 40mm;
-                            width: 150px;
-                            height: 150px;
-                            opacity: 0.9;
+                        .qr-code-box {
+                            text-align: left;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
                         }
 
-                        .id-tag {
+                        .qr-code-box img {
+                            width: 85px;
+                            height: 85px;
+                            border: 1px solid #f0f0f0;
+                            padding: 2px;
+                            background: white;
+                        }
+
+                        .qr-label {
+                            font-size: 7pt;
+                            margin-top: 2mm;
+                            color: #999;
+                            font-weight: 700;
+                            letter-spacing: 0.5pt;
+                        }
+
+                        .seal {
                             position: absolute;
-                            bottom: 10mm;
+                            bottom: 25mm;
+                            right: 45mm;
+                            width: 130px;
+                            height: 130px;
+                            opacity: 0.85;
+                        }
+
+                        .cert-id-tag {
+                            position: absolute;
+                            bottom: 6mm;
                             left: 50%;
                             transform: translateX(-50%);
                             font-family: monospace;
                             font-size: 9pt;
-                            color: #999;
-                        }
-
-                        .qr-box {
-                            text-align: left;
-                        }
-
-                        .qr-box img {
-                            width: 80px;
-                            height: 80px;
-                            border: 1px solid #eee;
-                        }
-
-                        @media print {
-                            @page { size: landscape; margin: 0; }
-                            body { background: none; }
-                            .cert-page { box-shadow: none; }
+                            color: #aaa;
+                            letter-spacing: 1pt;
                         }
                     </style>
                 </head>
                 <body>
-                    <div class="cert-page">
-                        <div class="outer-border"></div>
-                        <div class="inner-border"></div>
-                        <div class="guilloche"></div>
+                    <div class="cert-container">
+                        <div class="border-outer"></div>
+                        <div class="border-inner"></div>
                         
-                        <div class="content">
-                            <div class="header-badge">
+                        <div class="main-content">
+                            <div class="logo-badge">
                                 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M50 5L15 20V45C15 66.6 29.9 86.4 50 95C70.1 86.4 85 66.6 85 45V20L50 5Z" fill="#1e3a8a"/>
                                     <path d="M40 65L25 50L30 45L40 55L70 25L75 30L40 65Z" fill="#d4af37"/>
@@ -218,46 +228,46 @@ const DashboardCertificates: React.FC<DashboardCertificatesProps> = ({ certifica
                             </div>
                             
                             <h1>Certifikát</h1>
-                            <div class="sub-header">Úspěšného Absolvování</div>
+                            <div class="cert-type">Úspěšného Absolvování</div>
                             
-                            <div class="text-main">Tímto čestně prohlašujeme, že student</div>
+                            <div class="intro-text">Tímto čestně potvrzujeme, že student</div>
                             <div class="student-name">${cert.studentName}</div>
                             
-                            <div class="course-info">
-                                řádně splnil veškeré studijní požadavky a úspěšně dokončil certifikační program
-                                <span class="course-name">${cert.courseName}</span>
+                            <div class="course-description">
+                                úspěšně splnil veškeré studijní moduly, praktické úkoly a finální zkoušku v rámci certifikačního programu
+                                <span class="course-title">${cert.courseName}</span>
                             </div>
 
-                            <div class="footer">
-                                <div class="qr-box">
+                            <div class="footer-section">
+                                <div class="qr-code-box">
                                     <img src="${qrUrl}" />
-                                    <div style="font-size: 7pt; margin-top: 2mm; color: #999;">OVĚŘIT PRAVOST</div>
+                                    <div class="qr-label">VERIFICATION ID: ${cert.code}</div>
                                 </div>
                                 
-                                <div class="signature-block">
-                                    <div class="signature-img">Vašek Gabriel</div>
-                                    <div class="sign-line">Zakladatel Mescon Academy</div>
+                                <div class="sig-block">
+                                    <div class="sig-name">Vašek Gabriel</div>
+                                    <div class="sig-line">Zakladatel Mescon Academy</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="seal-container">
+                        <div class="seal">
                             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="100" cy="100" r="90" fill="#d4af37" fill-opacity="0.1" stroke="#d4af37" stroke-width="2" stroke-dasharray="5,5"/>
-                                <circle cx="100" cy="100" r="70" fill="#d4af37" fill-opacity="0.2"/>
-                                <text x="50%" y="45%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="14" font-weight="bold">MESCON</text>
-                                <text x="50%" y="60%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="12">VERIFIED</text>
-                                <text x="50%" y="75%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="10">2024</text>
+                                <circle cx="100" cy="100" r="95" fill="none" stroke="#d4af37" stroke-width="1" stroke-dasharray="3,3"/>
+                                <circle cx="100" cy="100" r="80" fill="#d4af37" fill-opacity="0.05" stroke="#d4af37" stroke-width="0.5"/>
+                                <text x="50%" y="45%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="18" font-weight="bold">MESCON</text>
+                                <text x="50%" y="62%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="14">ELITE ACADEMY</text>
+                                <text x="50%" y="75%" text-anchor="middle" fill="#d4af37" font-family="Cinzel" font-size="11">OFFICIAL SEAL</text>
                             </svg>
                         </div>
 
-                        <div class="id-tag">KONTROLNÍ ID: ${cert.code} | SYSTÉM: MESCON-LMS-v2</div>
+                        <div class="cert-id-tag">VYDÁNO SYSTÉMEM MESCON ACADEMY • AUTENTICITA ZARUČENA</div>
                     </div>
                     <script>
                         window.onload = () => {
                             setTimeout(() => {
                                 window.print();
-                            }, 500);
+                            }, 1000);
                         }
                     </script>
                 </body>
@@ -300,9 +310,7 @@ const DashboardCertificates: React.FC<DashboardCertificatesProps> = ({ certifica
                                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-purple-600/20 opacity-50"></div>
                                 
                                 <div className="relative bg-white p-6 md:p-10 rounded-[1.8rem] min-h-[350px] flex flex-col items-center text-center justify-center border-4 border-double border-gray-200">
-                                    {/* Guillioche pattern background for card */}
                                     <div className="absolute inset-4 border border-blue-900/10 pointer-events-none"></div>
-                                    <div className="absolute inset-6 border border-yellow-600/10 pointer-events-none"></div>
                                     
                                     <div className="relative z-10 space-y-4">
                                         <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white mx-auto shadow-xl transform -rotate-3 mb-2">
@@ -334,9 +342,6 @@ const DashboardCertificates: React.FC<DashboardCertificatesProps> = ({ certifica
                                                 <p className="font-mono mt-1 text-blue-600">ID: {cert.code}</p>
                                             </div>
                                             <div className="flex flex-col items-end gap-1">
-                                                <div className="bg-white p-1 shadow-inner border border-gray-100 rounded-lg">
-                                                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${window.location.origin}?verify=${cert.code}`} className="w-10 h-10 opacity-70" alt="QR"/>
-                                                </div>
                                                 <span className="flex items-center gap-1 text-green-600"><ShieldCheck size={10}/> VERIFIED</span>
                                             </div>
                                         </div>
@@ -353,7 +358,7 @@ const DashboardCertificates: React.FC<DashboardCertificatesProps> = ({ certifica
                                     <Download size={18}/> STÁHNOUT PDF
                                 </button>
                                 <a 
-                                    href={`/?verify=${cert.code}`} 
+                                    href={`/verify?verify=${cert.code}`} 
                                     target="_blank" 
                                     rel="noreferrer" 
                                     className="py-4 px-6 bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white rounded-2xl font-black text-sm transition border border-gray-800 flex items-center justify-center gap-3 transform hover:scale-[1.02] active:scale-[0.98]"

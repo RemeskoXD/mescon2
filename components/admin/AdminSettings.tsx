@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Save, AlertTriangle, Activity, Lock, Globe, Bell, Power, RefreshCw, Server, Trophy, CheckCircle, XCircle, Link as LinkIcon, ShoppingCart, Ticket } from 'lucide-react';
+import { Settings, Save, AlertTriangle, Activity, Lock, Globe, Bell, Power, RefreshCw, Server, Trophy, CheckCircle, XCircle, Link as LinkIcon, ShoppingCart, Ticket, Bot, Sparkles } from 'lucide-react';
 import { SystemSettings } from '../../types';
 import { motion } from 'framer-motion';
 
@@ -109,6 +109,38 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ settings, onUpdateSetting
                 </div>
             </div>
 
+            {/* AI Mentor (Nexus) Configuration */}
+            <div className="bg-[#0B0F19] border border-gray-800 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-800">
+                    <div className="p-2 bg-emerald-900/20 rounded-lg text-emerald-400"><Bot size={20}/></div>
+                    <h3 className="font-bold text-white">AI Mentor (Nexus)</h3>
+                </div>
+                
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <div>
+                            <span className="text-sm text-gray-400 font-bold">Aktivovat AI Modul</span>
+                            <p className="text-[10px] text-gray-500">Zpřístupní Gemini chat pro studenty.</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked={localSettings.aiEnabled} onChange={e => handleChange('aiEnabled', e.target.checked)} className="sr-only peer"/>
+                            <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-emerald-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                        </label>
+                    </div>
+                    
+                    <div>
+                        <label className="text-xs font-bold text-gray-500 uppercase mb-2 block flex items-center gap-2"><Sparkles size={12}/> Systémová Instrukce (Prompt)</label>
+                        <textarea 
+                            value={localSettings.aiSystemInstruction || ''} 
+                            onChange={e => handleChange('aiSystemInstruction', e.target.value)}
+                            className="w-full h-32 bg-black border border-gray-700 rounded-xl p-3 text-white text-xs focus:border-emerald-500 outline-none resize-none custom-scrollbar"
+                            placeholder="Např. Jsi elitní business mentor..."
+                        />
+                        <p className="text-[9px] text-gray-600 mt-1 italic">Tato instrukce definuje osobnost a znalosti AI Mentora.</p>
+                    </div>
+                </div>
+            </div>
+
             {/* Home Page Marketing Links */}
             <div className="bg-[#0B0F19] border border-gray-800 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-800">
@@ -169,7 +201,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ settings, onUpdateSetting
                 
                 <div className="space-y-4">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-400">Aktivovat Banner</span>
+                        <span className="text-sm text-gray-400 font-bold">Aktivovat Banner</span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" checked={localSettings.leaderboardBanner?.active} onChange={e => handleLeaderboardChange('active', e.target.checked)} className="sr-only peer"/>
                             <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-orange-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
